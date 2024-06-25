@@ -1,11 +1,11 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ui';
-import 'dart:math';
-import 'dart:typed_data';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+//import 'dart:ui';
+//import 'dart:math';
+//import 'dart:typed_data';
+//import 'package:flutter/foundation.dart';
+//import 'package:flutter/material.dart';
 
 void main() {
   runApp(MyApp());
@@ -16,28 +16,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '中文橫轉直',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        body: MyHomePage(title: '中文橫轉直'),
-      )
-    );
+        title: '中文橫轉直',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        home: Scaffold(
+          body: MyHomePage(key: Key('中文橫轉直'), title: '中文橫轉直'),
+        ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({required Key key, required this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -158,18 +157,21 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             SizedBox(
               child: Row(children: [
-                RaisedButton(
+                ElevatedButton(
                   child: Text('剪貼簿貼上'),
                   onPressed: () async {
-                    ClipboardData data = await Clipboard.getData('text/plain');
-                    setState(() {
-                      _inputTextController.text = data.text;
-                      _inputText = data.text;
-                    });
+                    ClipboardData? data = await Clipboard.getData('text/plain');
+                    if (data != null && data.text != null) {
+                      String inputText = (data.text as String);
+                      setState(() {
+                        _inputTextController.text = inputText;
+                        _inputText = inputText;
+                      });
+                    }
                   },
                 ),
                 SizedBox(child: Container(), width: 10),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('清除輸入文字'),
                   onPressed: () async {
                     setState(() {
@@ -184,8 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             SizedBox(
               //child: Scrollbar(
-              child:
-              TextField(
+              child: TextField(
                 decoration: InputDecoration(
                   border: UnderlineInputBorder(),
                   filled: true,
@@ -243,9 +244,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       }, // Only numbers can be entered
                     )),
                 SizedBox(child: Container(), width: 10),
-                RaisedButton(onPressed: _convert, child: Text('橫轉直')),
+                ElevatedButton(onPressed: _convert, child: Text('橫轉直')),
                 SizedBox(child: Container(), width: 10),
-                RaisedButton(
+                ElevatedButton(
                   child: Text('抄去剪貼簿'),
                   onPressed: () async {
                     Clipboard.setData(
@@ -258,7 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           onPressed: () {},
                         ),
                       );
-                      Scaffold.of(context).showSnackBar(snackBar);
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     });
                   },
                 )

@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo "Installing Flutter"
+      - git clone https://github.com/flutter/flutter.git -b 3.10.0
+      - export PATH="$PATH:`pwd`/flutter/bin"
+      - echo "Flutter installed"
+      - echo "Installing your project dependencies"
+      - flutter pub get
+
+  build:
+    commands:
+      - echo "Building Flutter Web project"
+      - flutter build web --release
+
+  post_build:
+    commands:
+      - echo "Uploading New Build Files To Your s3 Bucket"
+      - aws s3 sync ./build/web s3://hori2webcr/
+      - echo "Creating CloudFront Cache Invalidation"
+      - aws cloudfront create-invalidation --distribution-id E244WU3VTRR6JE --paths "/*"
+      - echo "Succesfully Deployed"
